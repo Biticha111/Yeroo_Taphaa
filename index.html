@@ -1,10 +1,402 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="om">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeroo Taphaa - Gaaffii Alaabaa fi Kaartaa</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a, #090d16);
+            color: #f8fafc;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .quiz-container {
+            width: 95vw;
+            height: 95vh;
+            max-width: none;
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            color: #60a5fa;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #94a3b8;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .question-box {
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .visual-container {
+            width: 100%;
+            height: 35vh;
+            background: #0b1329;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 2px dashed #3b82f6;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+        }
+
+        .visual-container img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+
+        .flip-card {
+            perspective: 1000px;
+            width: 100%;
+            height: 180px;
+            margin-bottom: 10px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .flip-card-front {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .flip-card-back {
+            background: rgba(30, 58, 138, 0.95);
+            color: white;
+            transform: rotateY(180deg);
+            border: 1px solid #3b82f6;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .option-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .option-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .result-message {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .next-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .next-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .completion-screen {
+            text-align: center;
+            display: none;
+            flex-grow: 1;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .completion-screen h2 {
+            color: #34d399;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+    </style>
 </head>
 <body>
-$END$
+
+<div class="quiz-container" id="quizApp">
+    <h1>✨ Carraa Gaarii ✨</h1>
+
+    <div class="score-board">
+        <span id="questionCounter">Gaaffii: 1/10</span>
+        <span id="scoreTracker">Qabxii: 0</span>
+    </div>
+
+    <div id="activeQuizSection" style="display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between;">
+        <div class="question-box">
+            <div class="visual-container" id="visualDisplay">
+                <!-- Alaabaa ykn Kaartaa bakka bu'u -->
+            </div>
+            <div class="question-text" id="questionTitle">Gaaffichi asitti mul'ata</div>
+        </div>
+
+        <div class="flip-card" id="answerFlipCard">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <div class="options-grid" id="optionsGrid">
+                        <!-- Filannoo asitti galfama -->
+                    </div>
+                </div>
+                <div class="flip-card-back" id="cardBackContent">
+                    <div class="result-message" id="resultMessage">Sirrii dha!</div>
+                    <button class="next-btn" onclick="nextQuestion()">Gaaffii Itti Aanu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-screen" id="completionScreen">
+        <h2>Qormaanni Xumurameera! 🏆</h2>
+        <p id="finalScoreText" style="font-size: 1.4rem; margin-bottom: 20px; color: #cbd5e1;"></p>
+        <button class="next-btn" onclick="restartQuiz()">Irra Deebi'i Jalqabi</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            type: "flag",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/7/71/Flag_of_Ethiopia.svg",
+            question: "Alaabaan kun kan biyya kamii?",
+            options: ["Keeniyaa", "Itoophiyaa", "Suudaan", "Eertiraa"],
+            answer: 1
+        },
+        {
+            type: "map",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/9/9e/Flag_of_Japan.svg",
+            question: "Kaartaan ykn alaabaan biyya Asiyaa bahaa kun kamii?",
+            options: ["Japan", "Chaayinaa", "Koriyaa Kibbaa", "Vietnam"],
+            answer: 0
+        },
+        {
+            type: "flag",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Kenya.svg",
+            question: "Alaabaan halluuwwan gurraacha, diimaa, fi magariisa qabu kun kan eenyuti?",
+            options: ["Tanzaniyaa", "Ugaandaa", "Keeniyaa", "Somaliyaa"],
+            answer: 2
+        },
+        {
+            type: "map",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/0/05/Flag_of_Brazil.svg",
+            question: "Biyyi Amerikaa Kibbaa alaabaa kana qabdu tun kamii?",
+            options: ["Arjentiinaa", "Biraaziil", "Kolombiyaa", "Chilii"],
+            answer: 1
+        },
+        {
+            type: "flag",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/c/cf/Flag_of_Canada.svg",
+            question: "Mallattoo baala muka qabu kan qabdu alaabaan kun kan biyya kamii?",
+            options: ["Amerikaa", "Kaanaadaa", "Oostiraliaa", "Faransaay"],
+            answer: 1
+        },
+        {
+            type: "flag",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg",
+            question: "Alaabaan urjootaa fi sararoota qabu kun kan biyya kamii?",
+            options: ["Biriiteen", "Kaanaadaa", "Amerikaa (USA)", "Oostiraliaa"],
+            answer: 2
+        },
+        {
+            type: "map",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg",
+            question: "Alaabaan biyya Awurooppaa babbareedduu tun kam bakka bu'a?",
+            options: ["Faransaay", "Jarmanii", "Xaaliyaani", "Ispeen"],
+            answer: 0
+        },
+        {
+            type: "flag",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Great_Britain_%283-5%29.svg",
+            question: "Alaabaan Biriiteen (UK) jedhamtu kana keessatti beekamtu tunteedhaan kan agarsiiftu kamii?",
+            options: ["Biriiteen", "Aayerlandii Kaabaa", "Iskootland", "Weelsii"],
+            answer: 0
+        },
+        {
+            type: "map",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/b/b9/Flag_of_Australia.svg",
+            question: "Alaabaan kun biyya akkasumas kontiinenta taate kam agarsiisa?",
+            options: ["Oostiraliaa", "Noorsiwaay", "Nuuzilaandi", "Afirikaa Kibbaa"],
+            answer: 0
+        },
+        {
+            type: "flag",
+            visualSrc: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg",
+            question: "Alaabaan halluu Gurraacha, Diimaa, fi Keelloo qabdu tun kan biyya kamii?",
+            options: ["Jarmanii", "Beljiyami", "Awusturiyaa", "Neezerlaandi"],
+            answer: 0
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const visualDisplay = document.getElementById("visualDisplay");
+    const questionTitle = document.getElementById("questionTitle");
+    const optionsGrid = document.getElementById("optionsGrid");
+    const answerFlipCard = document.getElementById("answerFlipCard");
+    const questionCounter = document.getElementById("questionCounter");
+    const scoreTracker = document.getElementById("scoreTracker");
+    const resultMessage = document.getElementById("resultMessage");
+    const cardBackContent = document.getElementById("cardBackContent");
+    const activeQuizSection = document.getElementById("activeQuizSection");
+    const completionScreen = document.getElementById("completionScreen");
+    const finalScoreText = document.getElementById("finalScoreText");
+
+    function loadQuestion() {
+        const currentData = quizData[currentQuestionIndex];
+
+        visualDisplay.innerHTML = "";
+        const img = document.createElement("img");
+        img.src = currentData.visualSrc;
+        img.alt = "Alaabaa Biyyaa";
+        visualDisplay.appendChild(img);
+
+        questionTitle.textContent = currentData.question;
+
+        questionCounter.textContent = `Gaaffii: ${currentQuestionIndex + 1}/${quizData.length}`;
+        scoreTracker.textContent = `Qabxii: ${score}`;
+
+        optionsGrid.innerHTML = "";
+        currentData.options.forEach((option, index) => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.textContent = option;
+            btn.onclick = () => checkAnswer(index, currentData.answer);
+            optionsGrid.appendChild(btn);
+        });
+
+        answerFlipCard.classList.remove("flipped");
+    }
+
+    function checkAnswer(selectedIndex, correctIndex) {
+        const isCorrect = selectedIndex === correctIndex;
+        if (isCorrect) {
+            score += 10;
+            resultMessage.textContent = "🎉 Sirrii dha! Baay'ee gaarii!";
+            cardBackContent.style.background = "rgba(16, 185, 129, 0.95)";
+        } else {
+            resultMessage.textContent = "❌ Dogoggora! Deebiin sirriin miti.";
+            cardBackContent.style.background = "rgba(239, 68, 68, 0.95)";
+        }
+
+        scoreTracker.textContent = `Qabxii: ${score}`;
+        answerFlipCard.classList.add("flipped");
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            activeQuizSection.style.display = "none";
+            completionScreen.style.display = "flex";
+            finalScoreText.textContent = `Qabxii kee waliigalaa: ${score} / ${quizData.length * 10}`;
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        completionScreen.style.display = "none";
+        activeQuizSection.style.display = "flex";
+        loadQuestion();
+    }
+
+    loadQuestion();
+</script>
 </body>
 </html>
